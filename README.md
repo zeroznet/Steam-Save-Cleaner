@@ -29,7 +29,7 @@ Download `ssc-win64-….zip` (Windows) or `ssc-linux-x64-….tar.xz` (Linux) fro
 **Verifying a download:** every release file is built by GitHub Actions from this repository's
 source. Each release lists the build it came from, with `SHA256SUMS.txt` to compare your download
 against. With the [GitHub CLI](https://cli.github.com/) you can also check where a file was built:
-`gh attestation verify <file> --repo zeroznet/ssc`.
+`gh attestation verify <file> --repo zeroznet/Steam-Save-Cleaner`.
 
 Or build it from source, see [Building](#building).
 

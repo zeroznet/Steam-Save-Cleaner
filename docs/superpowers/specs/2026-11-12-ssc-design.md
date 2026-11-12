@@ -113,7 +113,7 @@ A throwaway SteamKit2 spike settled the approach on Robert's account:
   --verify-no-changes`, build for linux-x64 and win-x64, self-contained single-file binaries
   uploaded as artifacts with build provenance attestation; a `v*` tag creates a draft release with
   both binaries and SHA-256 checksums.
-- **GitHub repo** `zeroznet/ssc`, configured like the fork: public, issues on, wiki/projects/
+- **GitHub repo** `zeroznet/Steam-Save-Cleaner`, configured like the fork: public, issues on, wiki/projects/
   discussions off, merge commits only, delete branch on merge, secret scanning and push
   protection on, Actions workflow permissions read, `main` protected (PR required with 0
   approvals, enforce admins, conversation resolution, no force push or deletion). Created and
