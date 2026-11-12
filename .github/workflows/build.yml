@@ -1,0 +1,125 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    # A version tag (v1.0.0) also builds a draft release.
+    tags: ["v*"]
+    paths-ignore:
+      - "**/*.md"
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_NOLOGO: 1
+
+jobs:
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-dotnet@v6
+      with:
+        global-json-file: global.json
+    - run: dotnet format --verify-no-changes
+
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-dotnet@v6
+      with:
+        global-json-file: global.json
+    - run: dotnet test
+
+  build:
+    needs: [format, test]
+    strategy:
+      matrix:
+        include:
+        - rid: linux-x64
+          os: ubuntu-24.04
+          binary: ssc
+          asset: ssc-linux-x64
+        - rid: win-x64
+          os: windows-2025
+          binary: ssc.exe
+          asset: ssc-win-x64.exe
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-dotnet@v6
+      with:
+        global-json-file: global.json
+
+    - name: Publish
+      shell: bash
+      run: |
+        dotnet publish src/Ssc -c Release -r ${{ matrix.rid }} --self-contained -p:PublishSingleFile=true -o publish
+        mkdir dist
+        cp "publish/${{ matrix.binary }}" "dist/${{ matrix.asset }}"
+
+    # Records that the binary was built by this workflow from this commit, which anyone can
+    # check with: gh attestation verify <file> --repo <owner>/<repo>
+    - name: Attest
+      if: github.event_name != 'pull_request'
+      uses: actions/attest-build-provenance@v4
+      with:
+        subject-path: dist/*
+
+    - uses: actions/upload-artifact@v7
+      with:
+        name: ssc-${{ matrix.rid }}
+        path: dist/*
+
+  release:
+    if: github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/download-artifact@v8
+      with:
+        pattern: ssc-*
+        path: dist
+        merge-multiple: true
+
+    - name: Checksums
+      working-directory: dist
+      run: |
+        sha256sum * > SHA256SUMS.txt
+        cat SHA256SUMS.txt
+
+    - name: Draft release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        tag="$GITHUB_REF_NAME"
+        run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        cat > notes.md <<NOTES
+        (Release notes go here.)
+
+        ---
+
+        Built by GitHub Actions ([this run]($run)) from commit ${{ github.sha }}.
+        To check a download, compare it with \`SHA256SUMS.txt\`, or verify where it was built:
+
+            gh attestation verify <file> --repo ${{ github.repository }}
+        NOTES
+        gh release create "$tag" dist/* --repo "${{ github.repository }}" --draft --verify-tag \
+          --title "$tag" --notes-file notes.md
