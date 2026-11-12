@@ -18,6 +18,7 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1 DOTNET_SYSTEM_GLOBALIZATION
 ~/.dotnet/dotnet test --project tests/Ssc.Tests --filter-method "*All_WithExcept*"   # one test
 ~/.dotnet/dotnet format --verify-no-changes           # CI gate
 ~/.dotnet/dotnet run --project src/Ssc -- --help
+python3 assets/render-cracktro.py                     # README banner; commit the svg with it
 ```
 
 ## Architecture
