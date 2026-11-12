@@ -107,7 +107,7 @@ A throwaway SteamKit2 spike settled the approach on Robert's account:
   (`InvalidPassword`, `AccessDenied`, `Expired`...), delete the token and fall back to QR.
 - **Repo identity** (matches Robert's Bloodborne fork): BSD-2-Clause `LICENSE`, VisualStudio
   `.gitignore`, `CONTRIBUTING.md`, issue form, README in the same shape (intro, warning callout, Requirements, Install, Usage, How it
-  works, Troubleshooting, Building, AI disclosure, Credits, License with trademark disclaimer).
+  works, Troubleshooting, Building, Credits, License with trademark disclaimer).
   No SPDX headers or REUSE files: the fork carries them only because shadPS4 upstream requires them.
 - **CI** (`.github/workflows/build.yml`, same shape as the fork): `dotnet format
   --verify-no-changes`, build for linux-x64 and win-x64, self-contained single-file binaries

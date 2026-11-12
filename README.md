@@ -144,10 +144,6 @@ dotnet publish src/Ssc -c Release -r linux-x64 --self-contained -p:PublishSingle
 
 Use `-r win-x64` for Windows. The binary is `publish/ssc` (`publish\ssc.exe`).
 
-## AI disclosure
-
-An AI coding agent was used in the development of this project.
-
 ## Credits
 
 - [SteamKit2](https://github.com/SteamRE/SteamKit), for the Steam network client and QR login.
