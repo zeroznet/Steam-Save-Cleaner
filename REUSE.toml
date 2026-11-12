@@ -4,6 +4,7 @@ version = 1
 path = [
     "REUSE.toml",
     "LICENSE",
+    "global.json",
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Copyright 2026 Robert Bopko"
