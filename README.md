@@ -1,4 +1,24 @@
-# ssc
+<p align="center">
+  <img src="assets/cracktro.svg" width="100%" alt="ssc cracktro: a chrome SSC logo decrypts between copper bars, release info types itself over a starfield and a rainbow sine scroller carries the greetz">
+</p>
+
+<p align="center">
+  <a href="https://github.com/zeroznet/Steam-Save-Cleaner/actions/workflows/build.yml"><img src="https://img.shields.io/github/actions/workflow/status/zeroznet/Steam-Save-Cleaner/build.yml?branch=main&style=flat-square&label=build&labelColor=000000" alt="Build"></a>
+  <a href="https://github.com/zeroznet/Steam-Save-Cleaner/releases/latest"><img src="https://img.shields.io/github/v/release/zeroznet/Steam-Save-Cleaner?style=flat-square&labelColor=000000&color=00ffff" alt="Release"></a>
+  <a href="https://github.com/zeroznet/Steam-Save-Cleaner/commits/main"><img src="https://img.shields.io/github/last-commit/zeroznet/Steam-Save-Cleaner?style=flat-square&labelColor=000000&color=ff5fff" alt="Last Commit"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/zeroznet/Steam-Save-Cleaner?style=flat-square&labelColor=000000&color=875fff" alt="License"></a>
+</p>
+
+```text
+ ░▒▓█ S P E C S █▓▒░
+
+ PLATFORMS ..... Windows 10/11 x64 * Linux x64 * WSL
+ NEEDS ......... a Steam account + the Steam mobile app for the QR login
+ RUNTIME ....... none, one self-contained binary
+ TOUCHES ....... Steam Cloud only, never local save folders
+ SPARES ........ Steam Client (7) + Steam Input Configs (241100) on --all
+ LICENSE ....... BSD-2-Clause
+```
 
 ssc (Steam Save Cleaner) deletes Steam Cloud files in bulk. Steam keeps the cloud saves of every
 game you ever played, and the Steam client has no button to remove them: the usual way is to
@@ -16,12 +36,7 @@ and none of the games need to be installed.
 > If a game is still installed somewhere, it may upload its local saves again the next time it
 > starts.
 
-## Requirements
-
-- Windows 10 or 11, 64-bit, or Linux x64 (WSL works)
-- A Steam account with the Steam mobile app, to scan the login QR code
-
-## Install
+## ▓▒░ I N S T A L L ░▒▓
 
 Download `ssc-win64-….zip` (Windows) or `ssc-linux-x64-….tar.xz` (Linux) from
 [Releases](../../releases), unpack it and put `ssc.exe` / `ssc` anywhere on your `PATH`.
@@ -31,11 +46,11 @@ source. Each release lists the build it came from, with `SHA256SUMS.txt` to comp
 against. With the [GitHub CLI](https://cli.github.com/) you can also check where a file was built:
 `gh attestation verify <file> --repo zeroznet/Steam-Save-Cleaner`.
 
-Or build it from source, see [Building](#building).
+Or build it from source, see Building below.
 
-## Usage
+## ▓▒░ U S A G E ░▒▓
 
-### Log in
+### `01/04` L O G &nbsp; I N
 
 ```
 $ ssc login
@@ -55,7 +70,7 @@ The login is saved in `~/.config/ssc/refresh_token` (Windows: `%APPDATA%\ssc\ref
 readable only by you, and the other commands reuse it. `list` and `delete` log in by themselves
 when no login is saved.
 
-### List games with cloud files
+### `02/04` L I S T
 
 ```
 $ ssc list
@@ -71,7 +86,7 @@ Total: 5 games, 57 files, 8.9 MB
 
 Games Steam shows without a name are listed as `?`.
 
-### Delete
+### `03/04` D E L E T E
 
 ```
 $ ssc delete 40700
@@ -95,7 +110,7 @@ If any appid you give is not in your Steam Cloud, ssc stops before deleting anyt
 cannot hit a different game. After each game ssc lists its files again and reports it as failed
 if any are left; the exit code is non-zero when a game failed.
 
-### Log out
+### `04/04` L O G &nbsp; O U T
 
 ```
 $ ssc logout
@@ -105,7 +120,7 @@ Logged out.
 This deletes the saved login. To end the session on Steam's side as well, remove it under
 [Authorized devices](https://store.steampowered.com/account/authorizeddevices).
 
-## How it works
+## ▓▒░ H O W &nbsp; I T &nbsp; W O R K S ░▒▓
 
 - ssc uses [SteamKit2](https://github.com/SteamRE/SteamKit) to connect to the Steam network like
   the client does and logs in with a QR code, so it never sees your password.
@@ -122,7 +137,7 @@ This deletes the saved login. To end the session on Steam's side as well, remove
   delete its files through the Steam Cloud API, but that needs Windows and the Steam client, and
   works one game at a time.
 
-## Troubleshooting
+## ▓▒░ T R O U B L E S H O O T I N G ░▒▓
 
 - **`Could not reach a Steam server after 30 attempts.`** Steam servers sometimes drop new
   connections or answer `TryAnotherCM`; ssc reconnects by itself. If it gives up, try again later.
@@ -133,7 +148,7 @@ This deletes the saved login. To end the session on Steam's side as well, remove
 - **`The Steam store did not accept the login; the remote storage page did not load.`** Run
   `ssc logout` and `ssc login`. If it persists, Steam may have changed that page.
 
-## Building
+## ▓▒░ B U I L D I N G ░▒▓
 
 Needs the [.NET 10 SDK](https://dotnet.microsoft.com/download).
 
@@ -144,7 +159,13 @@ dotnet publish src/Ssc -c Release -r linux-x64 --self-contained -p:PublishSingle
 
 Use `-r win-x64` for Windows. The binary is `publish/ssc` (`publish\ssc.exe`).
 
-## Credits
+The banner on top is `assets/cracktro.svg`, rendered by `assets/render-cracktro.py` from the logo, release info and scroller text inside it. After changing them, regenerate it and commit both:
+
+```sh
+python3 assets/render-cracktro.py
+```
+
+## ▓▒░ C R E D I T S ░▒▓
 
 - [SteamKit2](https://github.com/SteamRE/SteamKit), for the Steam network client and QR login.
 - [QRCoder](https://github.com/Shane32/QRCoder), for the QR codes.
@@ -155,8 +176,14 @@ Use `-r win-x64` for Windows. The binary is `publish/ssc` (`publish\ssc.exe`).
   [SteamCloudFileManagerLite](https://github.com/GMMan/SteamCloudFileManagerLite), prior art for
   managing Steam Cloud files outside the Steam client.
 
-## License
+## ▓▒░ G R E E T Z ░▒▓
 
-BSD-2-Clause, see [LICENSE](LICENSE).
+steamkit crew * gaben (still counting to three) * sega for the gabecube * valve for never shipping a delete button * doctormckay * gibbed * qrcoder posse * razor 1911 * fairlight * future crew * everyone who ever emptied a save folder just to force a sync conflict
+
+## ▓▒░ L I C E N S E ░▒▓
+
+BSD-2-Clause, see [LICENSE](LICENSE). Written by Robert Bopko ([zeroznet](https://github.com/zeroznet)).
 
 Steam is a trademark of Valve Corporation. ssc is not affiliated with Valve.
+
+<p align="center"><sub><i>zero saves. zero mercy. zeroznet.</i></sub></p>

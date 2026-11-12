@@ -8,11 +8,13 @@ on:
     # A version tag (v1.0.0) also builds a draft release from this workflow's own files.
     tags: ["v*"]
     paths-ignore:
+      - "assets/**"
       - "docs/**"
       - "**/*.md"
 
   pull_request:
     paths-ignore:
+      - "assets/**"
       - "docs/**"
       - "**/*.md"
 
