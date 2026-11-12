@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright 2026 Robert Bopko
+# SPDX-License-Identifier: BSD-2-Clause
+name: ssc problem
+description: Something wrong with login, listing or deleting Steam Cloud files
+title: "[ssc]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check the README troubleshooting section first. Never paste your refresh_token or QR codes here.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happens
+      description: What you ran, what you see, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: ssc output
+      description: The full console output of the failing command.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ssc version and OS
+      placeholder: ssc 1.0.0, Windows 11 / Debian 13 (WSL)
+    validations:
+      required: true
