@@ -88,8 +88,11 @@ A throwaway SteamKit2 spike settled the approach on Robert's account:
   list all 57 games.
 - **Game names:** from the remote storage page when that path is used; with `EnumerateUserApps`,
   from `SteamApps.PICSGetProductInfo` (the app's `common/name`). Unknown names print as `?`.
-- **Appid 7** (the Steam client's own cloud entry) is never deleted by `--all`; deleting it
-  explicitly by appid is allowed.
+- **Protected apps:** appid 7 (the Steam client's own cloud entry) and appid 241100 (Steam Input
+  Configs, Robert's controller layouts; appid to be confirmed on the first `ssc list`) are never
+  deleted by `--all`; deleting them explicitly by appid is allowed.
+- **Rows without a name:** the remote storage page shows some games with an empty name (delisted
+  or hidden apps). ssc always prints the appid and shows the name as `?` when Steam gives none.
 - **Login and token:** QR via `BeginAuthSessionViaQRAsync`. The QR is printed to the terminal and
   written as `qr.png` plus a 3-second self-refreshing `qr.html` in the state directory; ssc prints
   the html path (and the `\\wsl.localhost\...` form under WSL). Account name and refresh token are
