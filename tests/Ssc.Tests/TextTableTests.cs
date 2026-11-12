@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2026 Robert Bopko
-// SPDX-License-Identifier: BSD-2-Clause
-
 namespace Ssc.Tests;
 
 public class TextTableTests

@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2026 Robert Bopko
-// SPDX-License-Identifier: BSD-2-Clause
-
 namespace Ssc.Tests;
 
 // Fixtures/remotestorage.html is synthetic: same row shape as store.steampowered.com/account/remotestorage.

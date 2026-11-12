@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: Copyright 2026 Robert Bopko
-SPDX-License-Identifier: BSD-2-Clause
--->
-
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -37,4 +32,4 @@ Steam calls have no unit tests; they are checked by hand on Robert's account. Lo
 
 ## Repo identity
 
-Matches Robert's Bloodborne fork: BSD-2-Clause, an SPDX header on every file (files that cannot hold one go into `REUSE.toml`), VisualStudio `.gitignore`, issue form in `.github/ISSUE_TEMPLATE/`. The GitHub repo `zeroznet/ssc` and its settings are created only on Robert's explicit go.
+Matches Robert's Bloodborne fork: BSD-2-Clause `LICENSE`, VisualStudio `.gitignore`, issue form in `.github/ISSUE_TEMPLATE/`. No SPDX headers or REUSE files: the fork has them only because shadPS4 upstream requires them. The GitHub repo `zeroznet/ssc` and its settings are created only on Robert's explicit go.

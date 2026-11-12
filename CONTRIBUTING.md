@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: Copyright 2026 Robert Bopko
-SPDX-License-Identifier: BSD-2-Clause
--->
-
 # Contributing
 
 ssc only touches Steam Cloud files of the account that logs in. Pull requests that reach other

@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: Copyright 2026 Robert Bopko
-SPDX-License-Identifier: BSD-2-Clause
--->
-
 # ssc (Steam Save Cleaner) design
 
 ## Intent
@@ -115,11 +110,11 @@ A throwaway SteamKit2 spike settled the approach on Robert's account:
 - **Output:** plain text tables, one result line per game, a summary at the end. No colors needed.
 - **Token expiry:** if logon with the saved token fails with an auth error
   (`InvalidPassword`, `AccessDenied`, `Expired`...), delete the token and fall back to QR.
-- **Repo identity** (matches Robert's Bloodborne fork): BSD-2-Clause, SPDX headers on every file,
-  `REUSE.toml`, `LICENSES/`, VisualStudio `.gitignore` with SPDX header, `CONTRIBUTING.md`, issue
-  form, README in the same shape (intro, warning callout, Requirements, Install, Usage, How it
+- **Repo identity** (matches Robert's Bloodborne fork): BSD-2-Clause `LICENSE`, VisualStudio
+  `.gitignore`, `CONTRIBUTING.md`, issue form, README in the same shape (intro, warning callout, Requirements, Install, Usage, How it
   works, Troubleshooting, Building, AI disclosure, Credits, License with trademark disclaimer).
-- **CI** (`.github/workflows/build.yml`, same shape as the fork): REUSE check, `dotnet format
+  No SPDX headers or REUSE files: the fork carries them only because shadPS4 upstream requires them.
+- **CI** (`.github/workflows/build.yml`, same shape as the fork): `dotnet format
   --verify-no-changes`, build for linux-x64 and win-x64, self-contained single-file binaries
   uploaded as artifacts with build provenance attestation; a `v*` tag creates a draft release with
   both binaries and SHA-256 checksums.

@@ -1,5 +1,3 @@
-# SPDX-FileCopyrightText: Copyright 2026 Robert Bopko
-# SPDX-License-Identifier: BSD-2-Clause
 name: ssc problem
 description: Something wrong with login, listing or deleting Steam Cloud files
 title: "[ssc]: "
