@@ -5,6 +5,7 @@ path = [
     "REUSE.toml",
     "LICENSE",
     "global.json",
+    "tests/Ssc.Tests/Fixtures/*",
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Copyright 2026 Robert Bopko"
