@@ -23,10 +23,13 @@ and none of the games need to be installed.
 
 ## Install
 
-Download `ssc-win-x64.exe` or `ssc-linux-x64` from [Releases](../../releases) and put it anywhere
-on your `PATH` (rename it to `ssc` if you like). On Linux, `chmod +x` it first. Each release lists
-`SHA256SUMS.txt`, and `gh attestation verify <file> --repo zeroznet/ssc` shows the workflow run
-that built a file.
+Download `ssc-win64-….zip` (Windows) or `ssc-linux-x64-….tar.xz` (Linux) from
+[Releases](../../releases), unpack it and put `ssc.exe` / `ssc` anywhere on your `PATH`.
+
+**Verifying a download:** every release file is built by GitHub Actions from this repository's
+source. Each release lists the build it came from, with `SHA256SUMS.txt` to compare your download
+against. With the [GitHub CLI](https://cli.github.com/) you can also check where a file was built:
+`gh attestation verify <file> --repo zeroznet/ssc`.
 
 Or build it from source, see [Building](#building).
 

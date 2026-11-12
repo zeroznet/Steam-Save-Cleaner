@@ -1,30 +1,38 @@
 name: Build
+# Manual runs show the title typed in when starting them (e.g. what the build is for).
+run-name: ${{ inputs.title || github.event.head_commit.message || github.event.pull_request.title || format('Build {0}', github.ref_name) }}
 
 on:
   push:
     branches: [main]
-    # A version tag (v1.0.0) also builds a draft release.
+    # A version tag (v1.0.0) also builds a draft release from this workflow's own files.
     tags: ["v*"]
     paths-ignore:
+      - "docs/**"
       - "**/*.md"
+
   pull_request:
     paths-ignore:
+      - "docs/**"
       - "**/*.md"
-  workflow_dispatch:
 
-permissions:
-  contents: read
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "What this build is for (shown as the run's name)"
+        required: false
+        type: string
 
 concurrency:
   group: ci-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' || github.event_name != 'push' }}
 
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_NOLOGO: 1
 
 jobs:
-  format:
+  dotnet-format:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v7
@@ -42,20 +50,29 @@ jobs:
         global-json-file: global.json
     - run: dotnet test
 
-  build:
-    needs: [format, test]
-    strategy:
-      matrix:
-        include:
-        - rid: linux-x64
-          os: ubuntu-24.04
-          binary: ssc
-          asset: ssc-linux-x64
-        - rid: win-x64
-          os: windows-2025
-          binary: ssc.exe
-          asset: ssc-win-x64.exe
-    runs-on: ${{ matrix.os }}
+  get-info:
+    runs-on: ubuntu-latest
+    outputs:
+      shorthash: ${{ steps.vars.outputs.shorthash }}
+      fullhash: ${{ steps.vars.outputs.fullhash }}
+      label: ${{ steps.vars.outputs.label }}
+    steps:
+    - uses: actions/checkout@v7
+    - name: Get git hash
+      id: vars
+      run: |
+        echo "shorthash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        echo "fullhash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        # File names: the version on a tag (release) build, the short commit otherwise.
+        if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+          echo "label=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+        else
+          echo "label=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        fi
+
+  windows:
+    runs-on: windows-2025
+    needs: get-info
     permissions:
       contents: read
       id-token: write
@@ -66,30 +83,78 @@ jobs:
       with:
         global-json-file: global.json
 
-    - name: Publish
-      shell: bash
-      run: |
-        dotnet publish src/Ssc -c Release -r ${{ matrix.rid }} --self-contained -p:PublishSingleFile=true -o publish
-        mkdir dist
-        cp "publish/${{ matrix.binary }}" "dist/${{ matrix.asset }}"
+    - name: Build
+      run: dotnet publish src/Ssc -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o publish
 
-    # Records that the binary was built by this workflow from this commit, which anyone can
+    - name: Package
+      shell: pwsh
+      run: |
+        $name = "ssc-win64-${{ needs.get-info.outputs.label }}"
+        New-Item -ItemType Directory pkg | Out-Null
+        Copy-Item publish/ssc.exe, LICENSE, README.md pkg/
+        Compress-Archive -Path pkg/* -DestinationPath "$name.zip"
+        "name=$name" >> $env:GITHUB_ENV
+
+    # Records that these files were built by this workflow from this commit, which anyone can
     # check with: gh attestation verify <file> --repo <owner>/<repo>
     - name: Attest
       if: github.event_name != 'pull_request'
       uses: actions/attest-build-provenance@v4
       with:
-        subject-path: dist/*
+        subject-path: |
+          publish/ssc.exe
+          ssc-win64-*.zip
 
-    - uses: actions/upload-artifact@v7
+    - name: Upload Windows artifact
+      uses: actions/upload-artifact@v7
       with:
-        name: ssc-${{ matrix.rid }}
-        path: dist/*
+        name: ${{ env.name }}
+        path: ${{ env.name }}.zip
 
+  linux:
+    runs-on: ubuntu-24.04
+    needs: get-info
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-dotnet@v6
+      with:
+        global-json-file: global.json
+
+    - name: Build
+      run: dotnet publish src/Ssc -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true -o publish
+
+    - name: Package
+      run: |
+        name=ssc-linux-x64-${{ needs.get-info.outputs.label }}
+        mkdir pkg
+        cp publish/ssc LICENSE README.md pkg/
+        tar -C pkg -cJf $name.tar.xz .
+        echo "name=$name" >> $GITHUB_ENV
+
+    - name: Attest
+      if: github.event_name != 'pull_request'
+      uses: actions/attest-build-provenance@v4
+      with:
+        subject-path: |
+          publish/ssc
+          ssc-linux-x64-*.tar.xz
+
+    - name: Upload Linux artifact
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ env.name }}
+        path: ${{ env.name }}.tar.xz
+
+  # A version tag: a draft release with exactly the files built above, their checksums, and a link
+  # to this run. Nothing is published: the draft waits for its notes and the Publish button.
   release:
     if: github.ref_type == 'tag'
-    needs: build
     runs-on: ubuntu-24.04
+    needs: [get-info, dotnet-format, test, windows, linux]
     permissions:
       contents: write
     steps:
@@ -111,15 +176,18 @@ jobs:
       run: |
         tag="$GITHUB_REF_NAME"
         run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        cat > notes.md <<NOTES
+        cat > notes.md <<EOF
         (Release notes go here.)
 
         ---
 
-        Built by GitHub Actions ([this run]($run)) from commit ${{ github.sha }}.
-        To check a download, compare it with \`SHA256SUMS.txt\`, or verify where it was built:
+        Built by GitHub Actions ([this run]($run)) from commit ${{ needs.get-info.outputs.fullhash }}.
+        Every file comes straight from that build. To check a download, compare it with
+        \`SHA256SUMS.txt\`, or verify where it was built with the GitHub CLI:
 
             gh attestation verify <file> --repo ${{ github.repository }}
-        NOTES
+        EOF
+        prerelease=""
+        if [[ "$tag" == *-* ]]; then prerelease="--prerelease"; fi
         gh release create "$tag" dist/* --repo "${{ github.repository }}" --draft --verify-tag \
-          --title "$tag" --notes-file notes.md
+          --title "$tag" --notes-file notes.md $prerelease
