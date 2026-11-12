@@ -8,6 +8,9 @@ public static partial class RemoteStoragePage
 {
     private static readonly string[] Units = ["B", "KB", "MB", "GB", "TB"];
 
+    // A rejected login cookie gets the sign-in page instead, which has no rows either.
+    public static bool IsAccountPage(string html) => AccountTablePattern().IsMatch(html);
+
     public static IReadOnlyList<CloudApp> Parse(string html)
     {
         var apps = new List<CloudApp>();
@@ -44,6 +47,9 @@ public static partial class RemoteStoragePage
         var unit = Array.FindIndex(Units, unit => unit.Equals(parts[1], StringComparison.OrdinalIgnoreCase));
         return unit < 0 ? 0 : (ulong)(value * Math.Pow(1024, unit));
     }
+
+    [GeneratedRegex(@"class=\s*""accountTable""", RegexOptions.IgnoreCase)]
+    private static partial Regex AccountTablePattern();
 
     [GeneratedRegex(@"<tr\b.*?</tr>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex RowPattern();

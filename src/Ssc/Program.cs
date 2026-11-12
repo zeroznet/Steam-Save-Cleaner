@@ -18,7 +18,11 @@ var logout = new Command("logout", "Delete the saved login.");
 logout.SetAction(_ => Console.WriteLine(tokens.Delete() ? "Logged out." : "No saved login."));
 
 var list = new Command("list", "List games with Steam Cloud files.");
-list.SetAction(_ => Console.WriteLine("not implemented"));
+list.SetAction(async (_, ct) =>
+{
+    await using var session = await Connect(ct);
+    Console.WriteLine(TextTable.Render(await new CloudCatalog(session).ListAppsAsync()));
+});
 
 var delete = new Command("delete", "Delete all Steam Cloud files of the given games.");
 delete.SetAction(_ => Console.WriteLine("not implemented"));

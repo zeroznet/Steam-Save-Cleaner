@@ -72,19 +72,14 @@ A throwaway SteamKit2 spike settled the approach on Robert's account:
   - `delete` prints the games, file counts and sizes it is about to wipe and asks `Delete? [y/N]`;
     `--yes` skips the prompt; `--dry-run` prints and stops.
   - `ssc logout`: deletes the saved token.
-- **Game list source:** first `Cloud.EnumerateUserApps` over the CM. SteamKit2 3.5.0's generated
-  `Cloud` service has no method for it, so the request/response contracts
-  are defined in ssc from node-steam-user's `steammessages_cloud.steamclient.proto`
-  (response: repeated `apps { appid, totalcount, totalsize }`) and sent with
-  `SteamUnifiedMessages.SendMessage("Cloud.EnumerateUserApps#1", ...)`. Unverified; if the CM
-  rejects it, fall back to a web session from the same login (SteamKit sample 002_WebCookie) and
-  parse `https://store.steampowered.com/account/remotestorage`, whose rows link
-  `remotestorageapp/?appid=N` and carry name, file count and size. The page is already verified to
-  list all 57 games.
-- **Game names:** from the remote storage page when that path is used; with `EnumerateUserApps`,
-  from `SteamApps.PICSGetProductInfo` (the app's `common/name`). Unknown names print as `?`.
+- **Game list source:** `https://store.steampowered.com/account/remotestorage`, fetched with a
+  `steamLoginSecure` cookie built from the session's web access token. Its rows link
+  `remotestorageapp/?appid=N` and carry name, file count and size. `Cloud.EnumerateUserApps` over
+  the CM (contracts from node-steam-user's proto, sent as `Cloud.EnumerateUserApps#1`) got no
+  answer within the job timeout on the first real run (2026-11-12), so ssc does not use it.
+- **Game names:** from the remote storage page. Unknown names print as `?`.
 - **Protected apps:** appid 7 (the Steam client's own cloud entry) and appid 241100 (Steam Input
-  Configs, Robert's controller layouts; appid to be confirmed on the first `ssc list`) are never
+  Configs, Robert's controller layouts; confirmed on the first `ssc list`) are never
   deleted by `--all`; deleting them explicitly by appid is allowed.
 - **Rows without a name:** the remote storage page shows some games with an empty name (delisted
   or hidden apps). ssc always prints the appid and shows the name as `?` when Steam gives none.
@@ -128,7 +123,5 @@ A throwaway SteamKit2 spike settled the approach on Robert's account:
 
 - Project layout (single project vs. a small library plus CLI), class names, table formatting.
 - Exact retry/backoff timings within the limits above.
-- Whether `EnumerateUserApps` or the web fallback is tried first after the first real run shows
-  which works.
 - Tests: unit tests for argument handling and the `--all/--except` selection; the Steam calls are
   tested manually against a real account, one disposable game at a time.

@@ -22,7 +22,7 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1 DOTNET_SYSTEM_GLOBALIZATION
 
 ## Architecture
 
-- Pure, unit-tested logic: `Selection` (which games `delete` touches, protected appids 7 and 241100 excluded from `--all`), `TextTable` + `Confirmation` (output and the y/N prompt, "N" without a terminal), `RemoteStoragePage` (regex parser for the store's remote storage page, the game-list fallback), `Paging` (page `EnumerateUserFiles` until `total_files` or an empty page), `TokenStore` + `StatePaths` (state in `ApplicationData/ssc`, `refresh_token` mode 600).
+- Pure, unit-tested logic: `Selection` (which games `delete` touches, protected appids 7 and 241100 excluded from `--all`), `TextTable` + `Confirmation` (output and the y/N prompt, "N" without a terminal), `RemoteStoragePage` (regex parser for the store's remote storage page, the game list source; `Cloud.EnumerateUserApps` gets no answer from the CM), `Paging` (page `EnumerateUserFiles` until `total_files` or an empty page), `TokenStore` + `StatePaths` (state in `ApplicationData/ssc`, `refresh_token` mode 600).
 - `SteamSession` owns the SteamKit2 connection: callback loop on a background thread, QR login (`QrDisplay` prints the QR and writes a self-refreshing `qr.html`), saved-token logon with a random `LoginID`, reconnect on `TryAnotherCM`/`ServiceUnavailable` and on drops while the QR waits.
 - Cloud calls go through SteamKit's `Cloud` unified service. The delete path that works on a real account is `BeginAppUploadBatch` → `ClientDeleteFile(is_explicit_delete)` per file → `CompleteAppUploadBatchBlocking`, then re-list to confirm. The public Web API (`api.steampowered.com/ICloudService`) returns 401 with a user token; don't go back to it.
 

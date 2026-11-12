@@ -1,6 +1,6 @@
 namespace Ssc.Tests;
 
-// Fixtures/remotestorage.html is synthetic: same row shape as store.steampowered.com/account/remotestorage.
+// Fixtures/remotestorage.html is the real store.steampowered.com/account/remotestorage table, trimmed to four rows.
 public class RemoteStoragePageTests
 {
     private static IReadOnlyList<CloudApp> ParseFixture() =>
@@ -10,18 +10,25 @@ public class RemoteStoragePageTests
     public void Parse_ReadsRows()
     {
         var apps = ParseFixture();
-        Assert.Equal([220u, 4000u, 1234560u], apps.Select(app => app.AppId));
+        Assert.Equal([220u, 240u, 744350u, 1213210u], apps.Select(app => app.AppId));
         Assert.Equal("Half-Life 2", apps[0].Name);
         Assert.Equal(35u, apps[0].FileCount);
-        Assert.InRange(apps[0].TotalSize, 19_000_000ul, 19_200_000ul);
-        Assert.Equal(512ul, apps[1].TotalSize);
+        Assert.InRange(apps[0].TotalSize, 6_500_000ul, 6_520_000ul);
+        Assert.InRange(apps[1].TotalSize, 19_950ul, 19_960ul);
     }
 
     [Fact]
-    public void Parse_DecodesEntities() => Assert.Equal("Tom & Jerry", ParseFixture()[1].Name);
+    public void Parse_DecodesEntities() => Assert.Equal("Command & Conquer™ Remastered Collection", ParseFixture()[3].Name);
 
     [Fact]
     public void Parse_EmptyName_IsQuestionMark() => Assert.Equal("?", ParseFixture()[2].Name);
+
+    [Fact]
+    public void IsAccountPage_FindsTable() =>
+        Assert.True(RemoteStoragePage.IsAccountPage(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", "remotestorage.html"))));
+
+    [Fact]
+    public void IsAccountPage_SignInPage_IsFalse() => Assert.False(RemoteStoragePage.IsAccountPage("<html><body>Sign in</body></html>"));
 
     [Fact]
     public void Parse_LinkInNameCell()
