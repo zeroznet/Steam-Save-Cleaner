@@ -9,13 +9,11 @@ on:
     tags: ["v*"]
     paths-ignore:
       - "assets/**"
-      - "docs/**"
       - "**/*.md"
 
   pull_request:
     paths-ignore:
       - "assets/**"
-      - "docs/**"
       - "**/*.md"
 
   workflow_dispatch:
