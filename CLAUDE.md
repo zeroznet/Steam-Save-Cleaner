@@ -4,7 +4,7 @@ ssc (Steam Save Cleaner) is a .NET CLI that logs into Steam as its own client se
 
 ## Commands
 
-The SDK is user-local in `~/.dotnet` (pinned by `global.json` to 10.0.404) and the WSL host has no libicu, so every command needs:
+The SDK is user-local in `~/.dotnet` (pinned by `global.json` to 10.0.404; stays on .NET 10 because the Steam client runs on it, so Dependabot skips SDK majors) and the WSL host has no libicu, so every command needs:
 
 ```sh
 export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
