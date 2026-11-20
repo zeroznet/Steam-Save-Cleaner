@@ -22,6 +22,10 @@ updates:
       day: monday
       time: "06:00"
       timezone: Europe/Bratislava
+    # .NET 10 on purpose: the Steam client runs on it. Feature bands and patches only.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "deps(sdk)"
 
