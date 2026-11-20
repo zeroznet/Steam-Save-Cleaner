@@ -1,1 +1,5 @@
 blank_issues_enabled: true
+contact_links:
+  - name: Steam account or Steam Cloud problems that also happen without ssc
+    url: https://help.steampowered.com
+    about: If the problem shows in the Steam client too, it is a Steam issue, not an ssc one.
