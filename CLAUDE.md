@@ -19,6 +19,8 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1 DOTNET_SYSTEM_GLOBALIZATION
 python3 assets/render-cracktro.py                     # README banner; commit the svg with it
 ```
 
+`assets/social.png` is the GitHub social preview (Settings > Social preview), a still of the banner's final frame; reshoot it when the banner changes.
+
 ## Architecture
 
 - Pure, unit-tested logic: `Selection` (which games `delete` touches, protected appids 7 and 241100 excluded from `--all`), `TextTable` + `Confirmation` (output and the y/N prompt, "N" without a terminal), `RemoteStoragePage` (regex parser for the store's remote storage page, the game list source; `Cloud.EnumerateUserApps` gets no answer from the CM), `Paging` (page `EnumerateUserFiles` until `total_files` or an empty page), `TokenStore` + `StatePaths` (state in `ApplicationData/ssc`, `refresh_token` mode 600).
