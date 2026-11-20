@@ -35,4 +35,4 @@ Steam calls have no unit tests; they are checked by hand on Robert's account. Lo
 
 ## Repo identity
 
-Matches Robert's Bloodborne fork: BSD-2-Clause `LICENSE`, VisualStudio `.gitignore`, issue form in `.github/ISSUE_TEMPLATE/`. No SPDX headers or REUSE files: the fork has them only because shadPS4 upstream requires them. The GitHub repo `zeroznet/ssc` and its settings are created only on Robert's explicit go.
+Matches Robert's Bloodborne fork: BSD-2-Clause `LICENSE`, VisualStudio `.gitignore`, issue form in `.github/ISSUE_TEMPLATE/`. No SPDX headers or REUSE files: the fork has them only because shadPS4 upstream requires them. The GitHub repo is `zeroznet/Steam-Save-Cleaner`, with the fork's settings: merge commits only, delete branch on merge, `main` protected (PR with 0 approvals, enforce admins, conversation resolution), Actions permissions read, secret scanning and push protection on.
