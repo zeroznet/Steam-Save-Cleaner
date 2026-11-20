@@ -1,7 +1,5 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ssc (Steam Save Cleaner) is a .NET CLI that logs into Steam as its own client session (QR login via SteamKit2) and lists or bulk-deletes the account's Steam Cloud files, without the Steam client or any game installed.
 
 ## Commands
