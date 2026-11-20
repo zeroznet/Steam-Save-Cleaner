@@ -1,3 +1,5 @@
+<!-- written by Robert Bopko (github.com/zeroznet) with Boba Bott (Claude Opus 5.5) -->
+
 <p align="center">
   <img src="assets/cracktro.svg" width="100%" alt="ssc cracktro: a chrome SSC logo decrypts between copper bars, release info types itself over a starfield and a rainbow sine scroller carries the greetz">
 </p>
